@@ -18,8 +18,11 @@ This plan outlines the steps to add support for passing an initial array of midd
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Middleware Registration Logic' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Middleware Registration Logic' (Protocol in workflow.md)
 
-## Phase 4: Verification and Documentation
+## Phase 4: Verification and Documentation [checkpoint: 35bf993]
 - [x] Task: Add comprehensive unit tests for execution order and non-ejectability of initial middlewares.
 - [x] Task: Update `README.md` with the new environment-aware logging middleware example.
 - [x] Task: Verify that existing tests pass (backward compatibility).
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Verification and Documentation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Verification and Documentation' (Protocol in workflow.md)
+- [x] Task: Refactor logic to internalize filtering of falsy middlewares.
+- [x] Task: Update types to allow falsy values in middleware array.
+- [x] Task: Update README to reflect simplified usage.
