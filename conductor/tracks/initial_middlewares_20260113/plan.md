@@ -6,9 +6,10 @@ This plan outlines the steps to add support for passing an initial array of midd
 - [x] Task: Create a reproduction test case to verify current behavior and define target behavior. 93be29f
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Setup and Baseline' (Protocol in workflow.md)
 
-## Phase 2: Type Definitions and API Updates
-- [ ] Task: Update `types.ts` to include `CreateFetchOptions` and update the `createFetch` signature.
-- [ ] Task: Refactor `createFetch` in `index.ts` to accept the new options object.
+## Phase 2: Type Definitions and API Updates [checkpoint: 2fa3528]
+- [x] Task: Update `types.ts` to include `CreateFetchOptions` and update the `createFetch` signature.
+- [x] Task: Refactor `createFetch` in `index.ts` to accept the new options object.
+- [ ] Task: Conductor - User Manual Verification 'Phase 2: Type Definitions and API Updates' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Type Definitions and API Updates' (Protocol in workflow.md)
 
 ## Phase 3: Middleware Registration Logic
