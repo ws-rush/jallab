@@ -2,7 +2,7 @@
 
 This plan outlines the steps to add support for passing an initial array of middlewares to the `createFetch` function using an options object.
 
-## Phase 1: Setup and Baseline
+## Phase 1: Setup and Baseline [checkpoint: 4eda8fd]
 - [x] Task: Create a reproduction test case to verify current behavior and define target behavior. 93be29f
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Setup and Baseline' (Protocol in workflow.md)
 
