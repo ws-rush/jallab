@@ -1,4 +1,4 @@
-import type { Middleware, RegisteredMiddleware } from './types';
+import type { Middleware, RegisteredMiddleware, Context } from './types';
 
 /**
  * Creates a fetch instance with middleware support.
@@ -8,8 +8,24 @@ export default function createFetch() {
   let nextId = 0;
 
   const fetchInstance = async (input: URL | RequestInfo, init?: RequestInit): Promise<Response> => {
-    // Basic implementation that just calls the environment's fetch
-    return fetch(input, init);
+    // Create a new Request object to be passed around and modified by middleware
+    const initialRequest = new Request(input, init);
+    const context: Context = { request: initialRequest };
+
+    let index = 0;
+
+    const dispatch = async (i: number): Promise<Response> => {
+      if (i < middlewares.length) {
+        const middleware = middlewares[i];
+        return middleware.fn(context, () => dispatch(i + 1));
+      } else {
+        // Final call to the native fetch
+        // Note: We use the modified request from context
+        return fetch(context.request);
+      }
+    };
+
+    return dispatch(0);
   };
 
   /**

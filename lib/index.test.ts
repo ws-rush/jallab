@@ -16,7 +16,10 @@ describe('createFetch', () => {
     const fetch = createFetch();
     const response = await fetch('https://example.com');
 
-    expect(globalThis.fetch).toHaveBeenCalledWith('https://example.com', undefined);
+    expect(globalThis.fetch).toHaveBeenCalledWith(expect.any(Request));
+    const lastCall = vi.mocked(globalThis.fetch).mock.calls[0];
+    const request = lastCall[0] as Request;
+    expect(request.url).toBe('https://example.com/');
     expect(await response.text()).toBe('ok');
   });
 
@@ -25,6 +28,61 @@ describe('createFetch', () => {
     const request = new Request('https://example.com', { method: 'POST' });
     await fetch(request);
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(request, undefined);
+    expect(globalThis.fetch).toHaveBeenCalledWith(expect.any(Request));
+    const lastCall = vi.mocked(globalThis.fetch).mock.calls[0];
+    const passedRequest = lastCall[0] as Request;
+    expect(passedRequest.method).toBe('POST');
+    expect(passedRequest.url).toBe('https://example.com/');
+  });
+
+  it('should execute middleware in the correct order', async () => {
+    const fetch = createFetch();
+    const order: string[] = [];
+
+    fetch.use(async (ctx, next) => {
+      order.push('m1-start');
+      const res = await next();
+      order.push('m1-end');
+      return res;
+    });
+
+    fetch.use(async (ctx, next) => {
+      order.push('m2-start');
+      const res = await next();
+      order.push('m2-end');
+      return res;
+    });
+
+    await fetch('https://example.com');
+
+    expect(order).toEqual(['m1-start', 'm2-start', 'm2-end', 'm1-end']);
+  });
+
+  it('should allow middleware to modify the request', async () => {
+    const fetch = createFetch();
+
+    fetch.use(async (ctx, next) => {
+      ctx.request.headers.set('X-Test', 'true');
+      return next();
+    });
+
+    await fetch('https://example.com');
+
+    const lastCall = vi.mocked(globalThis.fetch).mock.calls[0];
+    const request = lastCall[0] as Request;
+    expect(request.headers.get('X-Test')).toBe('true');
+  });
+
+  it('should allow middleware to modify the response', async () => {
+    const fetch = createFetch();
+
+    fetch.use(async (_, next) => {
+      await next();
+      return new Response('intercepted', { status: 201 });
+    });
+
+    const response = await fetch('https://example.com');
+    expect(response.status).toBe(201);
+    expect(await response.text()).toBe('intercepted');
   });
 });
