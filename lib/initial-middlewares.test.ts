@@ -85,4 +85,11 @@ describe('createFetch with initial middlewares', () => {
     // Init should still run
     expect(order).toEqual(['init']);
   });
+
+  it('should work with an empty middlewares array', async () => {
+    const fetch = createFetch({ middlewares: [] });
+    const response = await fetch('https://example.com');
+    expect(response.status).toBe(200);
+    expect(await response.text()).toBe('ok');
+  });
 });

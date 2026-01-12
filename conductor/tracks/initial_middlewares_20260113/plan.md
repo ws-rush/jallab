@@ -19,7 +19,7 @@ This plan outlines the steps to add support for passing an initial array of midd
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Middleware Registration Logic' (Protocol in workflow.md)
 
 ## Phase 4: Verification and Documentation
-- [ ] Task: Add comprehensive unit tests for execution order and non-ejectability of initial middlewares.
-- [ ] Task: Update `README.md` with the new environment-aware logging middleware example.
-- [ ] Task: Verify that existing tests pass (backward compatibility).
+- [x] Task: Add comprehensive unit tests for execution order and non-ejectability of initial middlewares.
+- [x] Task: Update `README.md` with the new environment-aware logging middleware example.
+- [x] Task: Verify that existing tests pass (backward compatibility).
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Verification and Documentation' (Protocol in workflow.md)

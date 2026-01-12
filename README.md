@@ -60,11 +60,47 @@ const middlewareId = fetch.use(async (ctx, next) => {
 fetch.eject(middlewareId);
 ```
 
+### Initial Middlewares
+
+You can also provide a set of middlewares at initialization. These middlewares are registered first and cannot be ejected.
+
+```typescript
+import createFetch from "jallab";
+
+// Example: Performance logging middleware for development
+const performanceLogger = async (ctx, next) => {
+  const start = Date.now();
+  const response = await next();
+  const duration = Date.now() - start;
+
+  if (duration > 3000) {
+    console.error(`🔴 Critical Slowness: ${ctx.request.url} took ${duration}ms`);
+  } else if (duration > 1000) {
+    console.warn(`🟡 Slow Request: ${ctx.request.url} took ${duration}ms`);
+  }
+
+  return response;
+};
+
+const isDev = process.env.NODE_ENV === "development";
+
+const fetch = createFetch({
+  middlewares: [
+    isDev && performanceLogger
+  ].filter(Boolean)
+});
+```
+
 ## API
 
-### `createFetch()`
+### `createFetch(options?)`
 
 Creates a new `fetch` instance.
+
+**Parameters:**
+
+- `options`: `CreateFetchOptions` (Optional)
+  - `middlewares`: `Middleware[]` - Initial set of middlewares.
 
 **Returns:** A function that behaves like the standard `fetch` API, but with `use` and `eject` methods attached.
 
