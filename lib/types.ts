@@ -32,6 +32,7 @@ export interface RegisteredMiddleware {
 export interface CreateFetchOptions {
   /**
    * Initial set of middlewares to register.
+   * Falsy values (false, null, undefined) are ignored.
    */
-  middlewares?: Middleware[];
+  middlewares?: (Middleware | boolean | null | undefined)[];
 }

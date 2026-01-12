@@ -87,7 +87,7 @@ const isDev = process.env.NODE_ENV === "development";
 const fetch = createFetch({
   middlewares: [
     isDev && performanceLogger
-  ].filter(Boolean)
+  ]
 });
 ```
 
@@ -100,7 +100,7 @@ Creates a new `fetch` instance.
 **Parameters:**
 
 - `options`: `CreateFetchOptions` (Optional)
-  - `middlewares`: `Middleware[]` - Initial set of middlewares.
+  - `middlewares`: `(Middleware | boolean | null | undefined)[]` - Initial set of middlewares. Falsy values are ignored.
 
 **Returns:** A function that behaves like the standard `fetch` API, but with `use` and `eject` methods attached.
 

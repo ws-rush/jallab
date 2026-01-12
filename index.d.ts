@@ -13,7 +13,7 @@ export type JallabFetch = {
 };
 
 export interface CreateFetchOptions {
-  middlewares?: Middleware[];
+  middlewares?: (Middleware | boolean | null | undefined)[];
 }
 
 declare function createFetch(options?: CreateFetchOptions): JallabFetch;

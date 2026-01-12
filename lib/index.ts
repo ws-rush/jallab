@@ -10,8 +10,10 @@ export default function createFetch(options: CreateFetchOptions = {}) {
   // Register initial middlewares
   if (options.middlewares) {
     for (const fn of options.middlewares) {
-      // Initial middlewares have a special ID that cannot be ejected
-      middlewares.push({ id: -1, fn });
+      if (typeof fn === 'function') {
+        // Initial middlewares have a special ID that cannot be ejected
+        middlewares.push({ id: -1, fn });
+      }
     }
   }
 

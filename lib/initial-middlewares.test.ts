@@ -92,4 +92,20 @@ describe('createFetch with initial middlewares', () => {
     expect(response.status).toBe(200);
     expect(await response.text()).toBe('ok');
   });
+
+  it('should ignore falsy values in middlewares array', async () => {
+    const middlewareSpy = vi.fn(async (_ctx, next) => next());
+    
+    const fetch = createFetch({ 
+      middlewares: [
+        false, 
+        null, 
+        undefined, 
+        middlewareSpy
+      ] 
+    });
+    
+    await fetch('https://example.com');
+    expect(middlewareSpy).toHaveBeenCalled();
+  });
 });
