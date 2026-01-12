@@ -85,4 +85,35 @@ describe('createFetch', () => {
     expect(response.status).toBe(201);
     expect(await response.text()).toBe('intercepted');
   });
+
+  it('should allow ejecting middleware', async () => {
+    const fetch = createFetch();
+    const order: string[] = [];
+
+    const m1 = fetch.use(async (ctx, next) => {
+      order.push('m1');
+      return next();
+    });
+
+    const m2 = fetch.use(async (ctx, next) => {
+      order.push('m2');
+      return next();
+    });
+
+    await fetch('https://example.com');
+    expect(order).toEqual(['m1', 'm2']);
+
+    fetch.eject(m1);
+    order.length = 0; // Clear order
+
+    await fetch('https://example.com');
+    expect(order).toEqual(['m2']);
+    
+    // Ejecting non-existent ID should do nothing
+    fetch.eject(999);
+    order.length = 0;
+    
+    await fetch('https://example.com');
+    expect(order).toEqual(['m2']);
+  });
 });
