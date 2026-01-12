@@ -12,9 +12,10 @@ This plan outlines the steps to add support for passing an initial array of midd
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Type Definitions and API Updates' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Type Definitions and API Updates' (Protocol in workflow.md)
 
-## Phase 3: Middleware Registration Logic
-- [ ] Task: Implement logic in `createFetch` to handle the `middlewares` array from options.
-- [ ] Task: Ensure initial middlewares are stored such that they execute before dynamic ones and are not ejectable.
+## Phase 3: Middleware Registration Logic [checkpoint: df334e1]
+- [x] Task: Implement logic in `createFetch` to handle the `middlewares` array from options.
+- [x] Task: Ensure initial middlewares are stored such that they execute before dynamic ones and are not ejectable.
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Middleware Registration Logic' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Middleware Registration Logic' (Protocol in workflow.md)
 
 ## Phase 4: Verification and Documentation
