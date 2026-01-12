@@ -1,13 +1,83 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Jallab Middleware Demo</title>
+    <style>
+      body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background: #f4f4f9; }
+      .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+      pre { background: #2d2d2d; color: #ccc; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+      button { background: #646cff; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+      button:hover { background: #535bf2; }
+      .log-entry { margin: 0.5rem 0; padding: 0.3rem; border-left: 4px solid #646cff; background: #f0f0ff; font-family: monospace; }
+      .status { font-weight: bold; color: #2e7d32; }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <h1>Jallab Middleware Demo</h1>
+    
+    <div class="card">
+      <h3>1. Middleware Execution Test</h3>
+      <p>Click the button to trigger a fetch. Two middlewares are registered: one adds an Auth header, and another logs timing.</p>
+      <button id="run-test">Run Fetch with Middleware</button>
+    </div>
+
+    <div class="card">
+      <h3>Live Logs</h3>
+      <div id="logs"></div>
+    </div>
+
+    <div class="card">
+      <h3>Resulting Request Headers (via httpbin)</h3>
+      <pre id="result">No data yet...</pre>
+    </div>
+
+    <script type="module">
+      import createFetch from './lib/index';
+
+      const logEl = document.getElementById('logs');
+      const resultEl = document.getElementById('result');
+      const btn = document.getElementById('run-test');
+
+      const log = (msg) => {
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+        div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        logEl.prepend(div);
+      };
+
+      const fetch = createFetch();
+
+      // Middleware 1: Logging & Timing
+      fetch.use(async (ctx, next) => {
+        const start = performance.now();
+        log('M1: Request started...');
+        const res = await next();
+        const end = performance.now();
+        log(`M1: Request finished in ${(end - start).toFixed(2)}ms`);
+        return res;
+      });
+
+      // Middleware 2: Header injection
+      fetch.use(async (ctx, next) => {
+        log('M2: Injecting Authorization header');
+        ctx.request.headers.set('Authorization', 'Bearer jallab-demo-token');
+        return next();
+      });
+
+      btn.addEventListener('click', async () => {
+        log('Button clicked, initiating fetch...');
+        try {
+          const res = await fetch('https://httpbin.org/headers');
+          const data = await res.json();
+          resultEl.textContent = JSON.stringify(data.headers, null, 2);
+          log('Fetch successful!');
+        } catch (err) {
+          log('Error: ' + err.message);
+        }
+      });
+    </script>
   </body>
 </html>
