@@ -116,4 +116,15 @@ describe('createFetch', () => {
     await fetch('https://example.com');
     expect(order).toEqual(['m2']);
   });
+
+  it('should throw if no fetch implementation is found', async () => {
+    const originalFetch = globalThis.fetch;
+    // @ts-ignore
+    delete globalThis.fetch;
+
+    const fetch = createFetch();
+    await expect(fetch('https://example.com')).rejects.toThrow('No fetch implementation found');
+
+    globalThis.fetch = originalFetch;
+  });
 });

@@ -8,6 +8,12 @@ export default function createFetch() {
   let nextId = 0;
 
   const fetchInstance = async (input: URL | RequestInfo, init?: RequestInit): Promise<Response> => {
+    // Environment check
+    const nativeFetch = globalThis.fetch;
+    if (typeof nativeFetch !== 'function') {
+      throw new Error('No fetch implementation found in this environment.');
+    }
+
     // Create a new Request object to be passed around and modified by middleware
     const initialRequest = new Request(input, init);
     const context: Context = { request: initialRequest };
