@@ -18,8 +18,6 @@ export default function createFetch() {
     const initialRequest = new Request(input, init);
     const context: Context = { request: initialRequest };
 
-    let index = 0;
-
     const dispatch = async (i: number): Promise<Response> => {
       if (i < middlewares.length) {
         const middleware = middlewares[i];

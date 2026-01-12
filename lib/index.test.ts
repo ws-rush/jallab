@@ -39,14 +39,14 @@ describe('createFetch', () => {
     const fetch = createFetch();
     const order: string[] = [];
 
-    fetch.use(async (ctx, next) => {
+    fetch.use(async (_ctx, next) => {
       order.push('m1-start');
       const res = await next();
       order.push('m1-end');
       return res;
     });
 
-    fetch.use(async (ctx, next) => {
+    fetch.use(async (_ctx, next) => {
       order.push('m2-start');
       const res = await next();
       order.push('m2-end');
@@ -90,12 +90,12 @@ describe('createFetch', () => {
     const fetch = createFetch();
     const order: string[] = [];
 
-    const m1 = fetch.use(async (ctx, next) => {
+    const m1 = fetch.use(async (_ctx, next) => {
       order.push('m1');
       return next();
     });
 
-    const m2 = fetch.use(async (ctx, next) => {
+    fetch.use(async (_ctx, next) => {
       order.push('m2');
       return next();
     });

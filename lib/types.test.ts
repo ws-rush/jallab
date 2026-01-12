@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import type { Middleware, Context } from './types';
 
 describe('Core Types', () => {
   it('should have Middleware and Context types defined', () => {
