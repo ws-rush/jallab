@@ -7,6 +7,14 @@ export default function createFetch(options: CreateFetchOptions = {}) {
   const middlewares: RegisteredMiddleware[] = [];
   let nextId = 0;
 
+  // Register initial middlewares
+  if (options.middlewares) {
+    for (const fn of options.middlewares) {
+      // Initial middlewares have a special ID that cannot be ejected
+      middlewares.push({ id: -1, fn });
+    }
+  }
+
   const fetchInstance = async (input: URL | RequestInfo, init?: RequestInit): Promise<Response> => {
     // Environment check
     const nativeFetch = globalThis.fetch;
@@ -46,6 +54,7 @@ export default function createFetch(options: CreateFetchOptions = {}) {
    * Removes a middleware by its ID.
    */
   fetchInstance.eject = (id: number): void => {
+    if (id < 0) return;
     const index = middlewares.findIndex(m => m.id === id);
     if (index !== -1) {
       middlewares.splice(index, 1);
