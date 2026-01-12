@@ -12,6 +12,10 @@ export type JallabFetch = {
   eject(id: number): void;
 };
 
-declare function createFetch(): JallabFetch;
+export interface CreateFetchOptions {
+  middlewares?: Middleware[];
+}
+
+declare function createFetch(options?: CreateFetchOptions): JallabFetch;
 
 export default createFetch;

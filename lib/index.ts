@@ -1,9 +1,9 @@
-import type { Middleware, RegisteredMiddleware, Context } from './types';
+import type { Middleware, RegisteredMiddleware, Context, CreateFetchOptions } from './types';
 
 /**
  * Creates a fetch instance with middleware support.
  */
-export default function createFetch() {
+export default function createFetch(options: CreateFetchOptions = {}) {
   const middlewares: RegisteredMiddleware[] = [];
   let nextId = 0;
 

@@ -25,3 +25,13 @@ export interface RegisteredMiddleware {
   id: number;
   fn: Middleware;
 }
+
+/**
+ * Options for creating a fetch instance.
+ */
+export interface CreateFetchOptions {
+  /**
+   * Initial set of middlewares to register.
+   */
+  middlewares?: Middleware[];
+}

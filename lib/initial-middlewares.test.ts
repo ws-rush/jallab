@@ -10,7 +10,6 @@ describe('createFetch with initial middlewares', () => {
   it('should accept an options object with middlewares', async () => {
     const middlewareSpy = vi.fn(async (_ctx, next) => next());
     
-    // @ts-ignore: Type definition not yet updated
     const fetch = createFetch({ middlewares: [middlewareSpy] });
     
     await fetch('https://example.com');
@@ -28,7 +27,6 @@ describe('createFetch with initial middlewares', () => {
       return next();
     };
 
-    // @ts-ignore
     const fetch = createFetch({ middlewares: [m1, m2] });
     await fetch('https://example.com');
 
@@ -46,7 +44,6 @@ describe('createFetch with initial middlewares', () => {
       return next();
     };
 
-    // @ts-ignore
     const fetch = createFetch({ middlewares: [mInit] });
     fetch.use(mDyn);
     
@@ -62,7 +59,6 @@ describe('createFetch with initial middlewares', () => {
       return next();
     };
 
-    // @ts-ignore
     const fetch = createFetch({ middlewares: [mInit] });
     
     // Try to eject purely by guessing IDs (implementation detail check)
