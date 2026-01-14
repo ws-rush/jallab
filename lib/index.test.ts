@@ -86,19 +86,22 @@ describe('createFetch', () => {
     expect(await response.text()).toBe('intercepted');
   });
 
-  it('should allow ejecting middleware', async () => {
+  it('should allow ejecting middleware by reference', async () => {
     const fetch = createFetch();
     const order: string[] = [];
 
-    const m1 = fetch.use(async (_ctx, next) => {
+    const m1 = async (_ctx: any, next: any) => {
       order.push('m1');
       return next();
-    });
+    };
 
-    fetch.use(async (_ctx, next) => {
+    const m2 = async (_ctx: any, next: any) => {
       order.push('m2');
       return next();
-    });
+    };
+
+    fetch.use(m1);
+    fetch.use(m2);
 
     await fetch('https://example.com');
     expect(order).toEqual(['m1', 'm2']);
@@ -109,12 +112,35 @@ describe('createFetch', () => {
     await fetch('https://example.com');
     expect(order).toEqual(['m2']);
     
-    // Ejecting non-existent ID should do nothing
-    fetch.eject(999);
+    // Ejecting non-existent middleware should do nothing
+    const m3 = async (_ctx: any, next: any) => next();
+    fetch.eject(m3);
     order.length = 0;
     
     await fetch('https://example.com');
     expect(order).toEqual(['m2']);
+  });
+
+  it('should register middleware only once', async () => {
+    const fetch = createFetch();
+    const order: string[] = [];
+
+    const m1 = async (_ctx: any, next: any) => {
+      order.push('m1');
+      return next();
+    };
+
+    fetch.use(m1);
+    fetch.use(m1); // Should be ignored
+
+    await fetch('https://example.com');
+    expect(order).toEqual(['m1']);
+  });
+
+  it('should return void from use', () => {
+    const fetch = createFetch();
+    const result = fetch.use(async (_ctx, next) => next());
+    expect(result).toBeUndefined();
   });
 
   it('should throw if no fetch implementation is found', async () => {

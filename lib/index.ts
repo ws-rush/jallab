@@ -1,18 +1,16 @@
-import type { Middleware, RegisteredMiddleware, Context, CreateFetchOptions } from './types';
+import type { Middleware, Context, CreateFetchOptions } from './types';
 
 /**
  * Creates a fetch instance with middleware support.
  */
 export default function createFetch(options: CreateFetchOptions = {}) {
-  const middlewares: RegisteredMiddleware[] = [];
-  let nextId = 0;
+  const middlewares: Middleware[] = [];
 
   // Register initial middlewares
   if (options.middlewares) {
     for (const fn of options.middlewares) {
       if (typeof fn === 'function') {
-        // Initial middlewares have a special ID that cannot be ejected
-        middlewares.push({ id: -1, fn });
+        middlewares.push(fn);
       }
     }
   }
@@ -31,7 +29,7 @@ export default function createFetch(options: CreateFetchOptions = {}) {
     const dispatch = async (i: number): Promise<Response> => {
       if (i < middlewares.length) {
         const middleware = middlewares[i];
-        return middleware.fn(context, () => dispatch(i + 1));
+        return middleware(context, () => dispatch(i + 1));
       } else {
         // Final call to the native fetch
         // Note: We use the modified request from context
@@ -44,20 +42,19 @@ export default function createFetch(options: CreateFetchOptions = {}) {
 
   /**
    * Registers a new middleware.
-   * @returns A unique ID for the registered middleware.
+   * Enforces that a middleware function is registered only once.
    */
-  fetchInstance.use = (fn: Middleware): number => {
-    const id = nextId++;
-    middlewares.push({ id, fn });
-    return id;
+  fetchInstance.use = (fn: Middleware): void => {
+    if (!middlewares.includes(fn)) {
+      middlewares.push(fn);
+    }
   };
 
   /**
-   * Removes a middleware by its ID.
+   * Removes a middleware by its function reference.
    */
-  fetchInstance.eject = (id: number): void => {
-    if (id < 0) return;
-    const index = middlewares.findIndex(m => m.id === id);
+  fetchInstance.eject = (fn: Middleware): void => {
+    const index = middlewares.indexOf(fn);
     if (index !== -1) {
       middlewares.splice(index, 1);
     }

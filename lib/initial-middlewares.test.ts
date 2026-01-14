@@ -52,7 +52,7 @@ describe('createFetch with initial middlewares', () => {
     expect(order).toEqual(['init', 'dynamic']);
   });
 
-  it('should not allow ejecting initial middlewares', async () => {
+  it('should persist initial middlewares when ejecting dynamic ones', async () => {
     const order: string[] = [];
     const mInit: Middleware = async (_ctx, next) => {
       order.push('init');
@@ -61,24 +61,15 @@ describe('createFetch with initial middlewares', () => {
 
     const fetch = createFetch({ middlewares: [mInit] });
     
-    // Try to eject purely by guessing IDs (implementation detail check)
-    // Since we don't return IDs for init middlewares, we can't easily target them via API.
-    // This test ensures that even if we call eject with 0 or 1, it shouldn't remove the init middleware
-    // IF the init middleware was assigned an accessible ID.
-    // However, the spec says "Initial middlewares... will not return an ID". 
-    // So the best we can check is that it runs, and maybe check internal state if we exposed it, 
-    // but better to just rely on "no ID returned" behavior which we can't verify easily via public API 
-    // without types. 
-    
-    // Let's rely on the fact that .eject() takes an ID. 
-    // If I use .use(), I get an ID.
-    const id = fetch.use(async (_ctx, next) => {
+    const mDyn: Middleware = async (_ctx, next) => {
         order.push('dynamic');
         return next();
-    });
+    };
+
+    fetch.use(mDyn);
     
     // Eject the dynamic one
-    fetch.eject(id);
+    fetch.eject(mDyn);
     
     await fetch('https://example.com');
     

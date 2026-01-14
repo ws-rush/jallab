@@ -8,8 +8,8 @@ export type Middleware = (context: Context, next: Next) => Promise<Response>;
 
 export type JallabFetch = {
   (input: URL | RequestInfo, init?: RequestInit): Promise<Response>;
-  use(fn: Middleware): number;
-  eject(id: number): void;
+  use(fn: Middleware): void;
+  eject(fn: Middleware): void;
 };
 
 export interface CreateFetchOptions {

@@ -19,14 +19,6 @@ export type Next = () => Promise<Response>;
 export type Middleware = (context: Context, next: Next) => Promise<Response>;
 
 /**
- * Internal representation of a middleware with its unique ID.
- */
-export interface RegisteredMiddleware {
-  id: number;
-  fn: Middleware;
-}
-
-/**
  * Options for creating a fetch instance.
  */
 export interface CreateFetchOptions {
