@@ -45,24 +45,26 @@ const response = await fetch("https://api.example.com/data");
 
 ### Managing Middleware
 
-You can add and remove middleware dynamically.
+You can add and remove middleware dynamically. Middleware functions are registered only once; subsequent calls to `.use()` with the same function will be ignored.
 
 ```typescript
 const fetch = createFetch();
 
-// Add middleware
-const middlewareId = fetch.use(async (ctx, next) => {
+const customHeaderMiddleware = async (ctx, next) => {
   ctx.request.headers.set("X-Custom", "123");
   return next();
-});
+};
 
-// Remove middleware
-fetch.eject(middlewareId);
+// Add middleware
+fetch.use(customHeaderMiddleware);
+
+// Remove middleware using the same function reference
+fetch.eject(customHeaderMiddleware);
 ```
 
 ### Initial Middlewares
 
-You can also provide a set of middlewares at initialization. These middlewares are registered first and cannot be ejected.
+You can also provide a set of middlewares at initialization.
 
 ```typescript
 import createFetch from "jallab";
@@ -106,21 +108,23 @@ Creates a new `fetch` instance.
 
 ### `fetch.use(middleware)`
 
-Registers a middleware function.
+Registers a middleware function. If the function is already registered, it does nothing.
 
 **Parameters:**
 
 - `middleware`: `(context: Context, next: Next) => Promise<Response>`
 
-**Returns:** `number` (The middleware ID)
+**Returns:** `void`
 
-### `fetch.eject(id)`
+### `fetch.eject(middleware)`
 
-Removes a registered middleware by its ID.
+Removes a registered middleware by its function reference.
 
 **Parameters:**
 
-- `id`: `number`
+- `middleware`: `(context: Context, next: Next) => Promise<Response>`
+
+**Returns:** `void`
 
 ### Types
 
